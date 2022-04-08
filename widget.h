@@ -41,6 +41,7 @@ private:
     QSqlDatabase db;
     QSqlTableModel *model;
 
+    void initDatabase();
     void closeDatabase();
     bool validClassroom();
     bool validDuration();

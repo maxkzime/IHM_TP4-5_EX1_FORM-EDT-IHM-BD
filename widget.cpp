@@ -6,20 +6,14 @@
 #include "widget.h"
 #include "ui_widget.h"
 
+
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::Widget)
 {
     ui->setupUi(this);
 
-
-    db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("C:\\Users\\Maxime\\Documents\\session.bd");
-
-    if (!db.open())
-        qDebug() << "Error: connection with database failed";
-    else
-        qDebug() << "Database: connection ok";
+    initDatabase();
 
     populateDataItem();
 
@@ -30,6 +24,18 @@ Widget::Widget(QWidget *parent)
             SLOT(addnew()));
     connect(ui->submitButton, SIGNAL(clicked(bool)),this,
             SLOT(save()));
+}
+
+
+void Widget::initDatabase()
+{
+    db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName("C:\\Users\\Maxime\\Documents\\session.bd");
+
+    if (!db.open())
+        qDebug() << "Error: connection with database failed";
+    else
+        qDebug() << "Database: connection ok";
 }
 
 
@@ -46,8 +52,10 @@ void Widget::populateDataItem(){
     model->setHeaderData(4, Qt::Horizontal, tr("Classroom"));
 
     ui->tableView->setModel(model);
+    ui->tableView->hideColumn(0);
     ui->tableView->setAlternatingRowColors(true);
 }
+
 
 bool Widget::validClassroom()
 {
@@ -61,8 +69,8 @@ bool Widget::validClassroom()
         validation = false;
 
     return validation;
-
 }
+
 
 bool Widget::validDuration()
 {
@@ -105,6 +113,7 @@ void Widget::addnew()
                                  "Invalid Insert :\n Subject : AP,BD,CDIN,SI \n Type : CM,TD,TP \n Classroom : D204 \n Duration : in minutes ");
 }
 
+
 void Widget::remove(){
     int row=ui->tableView->currentIndex().row();
     if(QMessageBox::question(0,"Delete", "Record no. "
@@ -116,13 +125,14 @@ void Widget::remove(){
     }
 }
 
+
 void Widget::save(){
     bool flag=model->submitAll();
     if(flag==false)
-        QMessageBox::critical(0,"Failed", "cannot save changes.");
+        QMessageBox::critical(this,"Failed", "cannot save changes.");
     else
-        QMessageBox::information(0,"success",
-                                 "changes saved successfully.");
+        QMessageBox::information(this,"Success",
+                                 "Changes saved successfully.");
 }
 
 
