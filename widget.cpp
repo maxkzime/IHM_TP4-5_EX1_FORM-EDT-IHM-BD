@@ -57,8 +57,8 @@ void Widget::populateDataItem()
     itsModel->setHeaderData(4, Qt::Horizontal, tr("Classroom"));
 
     ui->tvTable->setModel(itsModel);
-//    ui->tvTable->sortByColumn(3, Qt::AscendingOrder);
-//    ui->tvTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    //    ui->tvTable->sortByColumn(3, Qt::AscendingOrder);
+    //    ui->tvTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 }
 
 
@@ -150,4 +150,5 @@ Widget::~Widget()
     closeDatabase();
     delete itsModel;
     delete ui;
+    delete itsProxyModel;
 }
