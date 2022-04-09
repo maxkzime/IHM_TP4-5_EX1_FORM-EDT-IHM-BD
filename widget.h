@@ -15,6 +15,9 @@
 #include <QDebug>
 #include <string>
 
+
+#include "myproxymodel.h"
+
 using std::string;
 
 QT_BEGIN_NAMESPACE
@@ -31,18 +34,21 @@ public:
     void populateDataItem();
 
 public slots:
-    void addnew();
+    void addNew();
     void remove();
     void save();
 
 
 private:
     Ui::Widget *ui;
-    QSqlDatabase db;
-    QSqlTableModel *model;
+
+    QSqlDatabase itsDB;
+    QSqlTableModel * itsModel;
+    MyProxyModel * itsProxyModel;
 
     void initDatabase();
     void closeDatabase();
+
     bool validClassroom();
     bool validDuration();
 

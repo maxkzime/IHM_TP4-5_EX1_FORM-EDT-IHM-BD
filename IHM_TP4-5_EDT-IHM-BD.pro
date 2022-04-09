@@ -10,9 +10,11 @@ CONFIG += c++11
 
 SOURCES += \
     main.cpp \
+    proxymodel.cpp \
     widget.cpp
 
 HEADERS += \
+    myproxymodel.h \
     widget.h
 
 FORMS += \

@@ -17,43 +17,48 @@ Widget::Widget(QWidget *parent)
 
     populateDataItem();
 
+    //itsProxyModel->setSourceModel(itsModel);
+
 
     connect(ui->deleteButton, SIGNAL(clicked(bool)),this,
             SLOT(remove()));
     connect(ui->addButton, SIGNAL(clicked(bool)),this,
-            SLOT(addnew()));
+            SLOT(addNew()));
     connect(ui->submitButton, SIGNAL(clicked(bool)),this,
             SLOT(save()));
+
+    connect(ui->dsb_duration, SIGNAL(valueChanged(double)),
+            itsProxyModel, SLOT(setValue(double)));
 }
 
 
 void Widget::initDatabase()
 {
-    db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("C:\\Users\\Maxime\\Documents\\session.bd");
+    itsDB = QSqlDatabase::addDatabase("QSQLITE");
+    itsDB.setDatabaseName("C:\\Users\\Maxime\\Documents\\session.bd");
 
-    if (!db.open())
+    if (!itsDB.open())
         qDebug() << "Error: connection with database failed";
     else
         qDebug() << "Database: connection ok";
 }
 
 
-void Widget::populateDataItem(){
-    model = new QSqlTableModel(0, db);
+void Widget::populateDataItem()
+{
+    itsModel = new QSqlTableModel(0, itsDB);
+    itsModel->setTable("session");
+    itsModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    itsModel->select();
+    itsModel->setHeaderData(0, Qt::Horizontal, tr("Subject"));
+    itsModel->setHeaderData(1, Qt::Horizontal, tr("Type"));
+    itsModel->setHeaderData(2, Qt::Horizontal, tr("DateTime"));
+    itsModel->setHeaderData(3, Qt::Horizontal, tr("Duration"));
+    itsModel->setHeaderData(4, Qt::Horizontal, tr("Classroom"));
 
-    model->setTable("session");
-    model->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    model->select();
-    model->setHeaderData(0, Qt::Horizontal, tr("Subject"));
-    model->setHeaderData(1, Qt::Horizontal, tr("Type"));
-    model->setHeaderData(2, Qt::Horizontal, tr("DateTime"));
-    model->setHeaderData(3, Qt::Horizontal, tr("Duration"));
-    model->setHeaderData(4, Qt::Horizontal, tr("Classroom"));
-
-    ui->tableView->setModel(model);
-    ui->tableView->hideColumn(0);
-    ui->tableView->setAlternatingRowColors(true);
+    ui->tvTable->setModel(itsModel);
+//    ui->tvTable->sortByColumn(3, Qt::AscendingOrder);
+//    ui->tvTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 }
 
 
@@ -82,7 +87,7 @@ bool Widget::validDuration()
 }
 
 
-void Widget::addnew()
+void Widget::addNew()
 {
     if(
             (ui->le_subject->text() == "AP" ||
@@ -100,12 +105,12 @@ void Widget::addnew()
             )
     {
         int row=0;
-        model->insertRows(row,1);
-        model->setData(model->index(row,0),ui->le_subject->text());
-        model->setData(model->index(row,1),ui->le_type->text());
-        model->setData(model->index(row,2),ui->le_date->text());
-        model->setData(model->index(row,3),ui->le_duration->text());
-        model->setData(model->index(row,4),ui->le_classroom->text());
+        itsModel->insertRows(row,1);
+        itsModel->setData(itsModel->index(row,0),ui->le_subject->text());
+        itsModel->setData(itsModel->index(row,1),ui->le_type->text());
+        itsModel->setData(itsModel->index(row,2),ui->le_date->text());
+        itsModel->setData(itsModel->index(row,3),ui->le_duration->text());
+        itsModel->setData(itsModel->index(row,4),ui->le_classroom->text());
     }
     else
         QMessageBox::information(this,
@@ -115,19 +120,19 @@ void Widget::addnew()
 
 
 void Widget::remove(){
-    int row=ui->tableView->currentIndex().row();
+    int row=ui->tvTable->currentIndex().row();
     if(QMessageBox::question(0,"Delete", "Record no. "
                              +QString::number(row+1)
                              +" will be deleted. Are you sure?",
                              QMessageBox::No,QMessageBox::Yes)==
             QMessageBox::Yes){
-        model->removeRow(row);
+        itsModel->removeRow(row);
     }
 }
 
 
 void Widget::save(){
-    bool flag=model->submitAll();
+    bool flag=itsModel->submitAll();
     if(flag==false)
         QMessageBox::critical(this,"Failed", "cannot save changes.");
     else
@@ -137,12 +142,12 @@ void Widget::save(){
 
 
 void Widget::closeDatabase()
-{db.close();}
+{itsDB.close();}
 
 
 Widget::~Widget()
 {
     closeDatabase();
-    delete model;
+    delete itsModel;
     delete ui;
 }
