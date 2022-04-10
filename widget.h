@@ -13,9 +13,11 @@
 #include <QMessageBox>
 #include <QString>
 #include <QDebug>
+#include <QDialog>
 
 
 #include "myproxymodel.h"
+#include "mydelegate.h"
 
 using std::string;
 
@@ -45,6 +47,7 @@ private:
     QSqlDatabase itsDB;
     QSqlTableModel * itsModel;
     MyProxyModel * itsProxyModel;
+    MyDelegate * itsDelegate;
 
     void initDatabase();
     void closeDatabase();

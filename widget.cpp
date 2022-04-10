@@ -18,8 +18,8 @@ Widget::Widget(QWidget *parent)
     populateDataItem();
 
     itsProxyModel = new MyProxyModel(this);
-
     itsProxyModel->setSourceModel(itsModel);
+
 
     connect(ui->deleteButton, SIGNAL(clicked(bool)),this,
             SLOT(remove()));
@@ -34,9 +34,14 @@ Widget::Widget(QWidget *parent)
 
     connect(ui->dsb_duration, SIGNAL(valueChanged(double)),
             itsProxyModel, SLOT(setValue(double)));
-
     connect(ui->le_classroomfilter, SIGNAL(textChanged(QString)),
             itsProxyModel, SLOT(setClassroom(QString)));
+
+
+    itsDelegate = new MyDelegate(this);
+    ui->tvTable->setItemDelegateForColumn(1, itsDelegate);
+
+
 }
 
 
@@ -146,6 +151,7 @@ void Widget::save(){
                                  "Changes saved successfully.");
 }
 
+
 void Widget::activateFilters(int state)
 {
     if(state == 2)
@@ -165,5 +171,4 @@ Widget::~Widget()
     closeDatabase();
     delete itsModel;
     delete ui;
-    delete itsProxyModel;
 }

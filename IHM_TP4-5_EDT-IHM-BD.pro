@@ -10,10 +10,12 @@ CONFIG += c++11
 
 SOURCES += \
     main.cpp \
-    proxymodel.cpp \
+    mydelegate.cpp \
+    myproxymodel.cpp \
     widget.cpp
 
 HEADERS += \
+    mydelegate.h \
     myproxymodel.h \
     widget.h
 

@@ -1,3 +1,8 @@
+// TP4-5/EX1/myproxymodel.h
+// Exercice 1 : Formulaire emploi du temps
+// BODIN Maxime C2
+// 08/04/2022
+
 #ifndef MYPROXYMODEL_H
 #define MYPROXYMODEL_H
 
