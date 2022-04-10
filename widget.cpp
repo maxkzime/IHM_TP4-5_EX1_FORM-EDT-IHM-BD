@@ -17,8 +17,9 @@ Widget::Widget(QWidget *parent)
 
     populateDataItem();
 
-    //itsProxyModel->setSourceModel(itsModel);
+    itsProxyModel = new MyProxyModel(this);
 
+    itsProxyModel->setSourceModel(itsModel);
 
     connect(ui->deleteButton, SIGNAL(clicked(bool)),this,
             SLOT(remove()));
@@ -27,8 +28,15 @@ Widget::Widget(QWidget *parent)
     connect(ui->submitButton, SIGNAL(clicked(bool)),this,
             SLOT(save()));
 
+    connect(ui->cb_filters, SIGNAL(stateChanged(int)),this,
+            SLOT(activateFilters(int)));
+
+
     connect(ui->dsb_duration, SIGNAL(valueChanged(double)),
             itsProxyModel, SLOT(setValue(double)));
+
+    connect(ui->le_classroomfilter, SIGNAL(textChanged(QString)),
+            itsProxyModel, SLOT(setClassroom(QString)));
 }
 
 
@@ -57,8 +65,6 @@ void Widget::populateDataItem()
     itsModel->setHeaderData(4, Qt::Horizontal, tr("Classroom"));
 
     ui->tvTable->setModel(itsModel);
-    //    ui->tvTable->sortByColumn(3, Qt::AscendingOrder);
-    //    ui->tvTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 }
 
 
@@ -138,6 +144,15 @@ void Widget::save(){
     else
         QMessageBox::information(this,"Success",
                                  "Changes saved successfully.");
+}
+
+void Widget::activateFilters(int state)
+{
+    if(state == 2)
+        ui->tvTable->setModel(itsProxyModel);
+    else
+        ui->tvTable->setModel(itsModel);
+
 }
 
 

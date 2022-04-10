@@ -13,7 +13,6 @@
 #include <QMessageBox>
 #include <QString>
 #include <QDebug>
-#include <string>
 
 
 #include "myproxymodel.h"
@@ -37,6 +36,7 @@ public slots:
     void addNew();
     void remove();
     void save();
+    void activateFilters(int state);
 
 
 private:
